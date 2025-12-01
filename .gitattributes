@@ -1,0 +1,5 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+*.meta eol=LF
+*.unity eol=LF
