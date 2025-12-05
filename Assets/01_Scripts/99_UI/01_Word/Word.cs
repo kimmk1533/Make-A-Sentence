@@ -1,49 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class Player : ObjectPoolItem<Player>, IWordObject
+public enum E_WordType
+{
+	// 플레이어
+	Player,
+	// 적
+	Enemy,
+	// 마법
+	Magic,
+
+	Max
+}
+
+public class Word : ObjectPoolItem<Word>
 {
 	#region 기본 템플릿
 	#region 변수
-	private Vector2 m_MovingDirection;
+	[SerializeField]
+	protected E_WordType m_WordType;
+	[SerializeField]
+	protected string m_WordKey;
 	#endregion
 
 	#region 프로퍼티
-	[field: SerializeField]
-	public float movingSpeed { get; set; }
-	[field: SerializeField]
-	public float nearbyRadius { get; set; }
-	public string wordKey => poolKey;
+	public E_WordType wordType => m_WordType;
+	public string wordKey => m_WordKey;
 	#endregion
 
 	#region 이벤트
-	public event System.Action onGiveDamage = null;
-	public event System.Action onTakeDamage = null;
 
 	#region 이벤트 함수
 	#endregion
 	#endregion
 
 	#region 매니저
-	private static PlayerManager M_Player => PlayerManager.Instance;
 	#endregion
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
 	/// 초기화 함수
 	/// </summary>
-	public void Initialize()
+	public virtual void Initialize()
 	{
 
 	}
 	/// <summary>
 	/// 마무리화 함수
 	/// </summary>
-	public void Finallize()
+	public virtual void Finallize()
 	{
 
 	}
@@ -54,6 +61,7 @@ public class Player : ObjectPoolItem<Player>, IWordObject
 	public override void InitializePoolItem()
 	{
 		base.InitializePoolItem();
+
 
 	}
 	/// <summary>
@@ -68,31 +76,6 @@ public class Player : ObjectPoolItem<Player>, IWordObject
 	#endregion
 
 	#region 유니티 콜백 함수
-	private void OnMove(InputValue inputValue)
-	{
-		m_MovingDirection = inputValue.Get<Vector2>();
-	}
-
-	private void Update()
-	{
-		Move();
-	}
 	#endregion
 	#endregion
-
-	public IWordObjectManager GetManager() => M_Player;
-
-	private void Move()
-	{
-		transform.position += (Vector3)(m_MovingDirection * movingSpeed * Time.deltaTime);
-	}
-
-	public void GiveDamage(float damage)
-	{
-		onGiveDamage?.Invoke();
-	}
-	public void TakeDamage(float damage)
-	{
-		onTakeDamage?.Invoke();
-	}
 }

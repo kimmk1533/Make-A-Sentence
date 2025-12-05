@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -6,6 +6,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-97)]
 public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> where TSelf : SerializedSingleton<TSelf> where TItem : ObjectPoolItem<TItem>
 {
+	#region 기본 템플릿
 	#region 변수
 	// 공통 경로
 	[SerializeField]
@@ -13,6 +14,28 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 	[SerializeField, PropertySpace(SpaceAfter = 10)]
 	protected List<OriginInfo> m_Origins = null;
 	protected Dictionary<string, ObjectPool<TItem>> m_ObjectPoolMap = null;
+	#endregion
+
+	#region 프로퍼티
+	#endregion
+
+	#region 매니저
+	#endregion
+
+	#region 이벤트
+	public System.Action<TItem> onSpawn = null;
+	public System.Action<TItem> onDespawn = null;
+
+	#region 이벤트 함수
+	private void OnSpawnedItem(TItem poolItem)
+	{
+		onSpawn?.Invoke(poolItem);
+	}
+	private void OnDespawnedItem(TItem poolItem)
+	{
+		onDespawn?.Invoke(poolItem);
+	}
+	#endregion
 	#endregion
 
 	#region 초기화 & 마무리화 함수
@@ -58,17 +81,18 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 	{
 		base.InitializeMain();
 
-		//for (int i = 0; i < m_Origins.Count; ++i)
-		//{
-		//	OriginInfo originInfo = m_Origins[i];
+		for (int i = 0; i < m_Origins.Count; ++i)
+		{
+			OriginInfo originInfo = m_Origins[i];
 
-		//	if (originInfo.useFlag == false)
-		//		continue;
+			if (originInfo.useFlag == false)
+				continue;
 
-		//	ObjectPool<TItem> itemPool = GetPool(originInfo.key);
-		//	ObjectPool<TItem>.ItemBuilder itemBuilder = new ObjectPool<TItem>.ItemBuilder(itemPool);
-		//	itemPool.Initialize(itemBuilder);
-		//}
+			ObjectPool<TItem> pool = GetPool(originInfo.key);
+
+			pool.onItemSpawned += OnSpawnedItem;
+			pool.onItemDespawned += OnDespawnedItem;
+		}
 	}
 	/// <summary>
 	/// 메인 마무리화 함수 (본인 Main Scene 나갈 시 호출)
@@ -84,9 +108,18 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 			if (originInfo.useFlag == false)
 				continue;
 
-			GetPool(originInfo.key).Finallize();
+			ObjectPool<TItem> pool = GetPool(originInfo.key);
+
+			pool.onItemSpawned -= OnSpawnedItem;
+			pool.onItemDespawned -= OnDespawnedItem;
+
+			pool.Finallize();
 		}
 	}
+	#endregion
+
+	#region 유니티 콜백 함수
+	#endregion
 	#endregion
 
 	protected void AddPool(OriginInfo info, Transform parent)

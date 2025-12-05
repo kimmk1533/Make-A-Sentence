@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,8 +23,8 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 
 	#region 프로퍼티
 	public int Count => m_PoolItemQueue.Count;
-	public int SpawnedItemCount => m_SpawnedItemList.Count;
 
+	public List<TItem> spawnedItemList => m_SpawnedItemList;
 	public TItem origin => m_Origin;
 	public bool autoExpandPool { get; set; }
 	public ItemBuilder builder => m_ItemBuilder;
@@ -96,10 +96,10 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 	}
 	private void ExpandPool(int newSize)
 	{
-		if (Count + SpawnedItemCount >= newSize)
+		if (Count + m_SpawnedItemList.Count >= newSize)
 			return;
 
-		int size = newSize - (Count + SpawnedItemCount);
+		int size = newSize - (Count + m_SpawnedItemList.Count);
 
 		for (int i = 0; i < size; ++i)
 		{
@@ -157,6 +157,8 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 			item.transform.SetParent(m_Parent);
 
 		item.transform.localPosition = Vector3.zero;
+		item.transform.localEulerAngles = Vector3.zero;
+		item.transform.localScale = Vector3.one;
 
 		if (autoFinal)
 			item.FinallizePoolItem();
@@ -179,7 +181,7 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 	// 메모리 해제
 	public void Dispose()
 	{
-		int count = SpawnedItemCount;
+		int count = m_SpawnedItemList.Count;
 		for (int i = 0; i < count; ++i)
 		{
 			Despawn(m_SpawnedItemList[i], true);
@@ -245,7 +247,7 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 
 			m_Name = new ItemProperty<string>();
 			m_Active = new ItemProperty<bool>();
-			m_AutoInit = new ItemProperty<bool>();
+			m_AutoInit = new ItemProperty<bool>(true);
 			m_Parent = new ItemProperty<Transform>();
 			m_Position = new ItemProperty<Vector3>();
 			m_LocalPosition = new ItemProperty<Vector3>();
@@ -257,63 +259,54 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 
 		public IItemBuilder SetName(string name)
 		{
-			m_Name.isUse = true;
 			m_Name.value = name;
 
 			return this;
 		}
 		public IItemBuilder SetActive(bool active)
 		{
-			m_Active.isUse = true;
 			m_Active.value = active;
 
 			return this;
 		}
 		public IItemBuilder SetAutoInit(bool autoInit)
 		{
-			m_AutoInit.isUse = true;
 			m_AutoInit.value = autoInit;
 
 			return this;
 		}
 		public IItemBuilder SetParent(Transform parent)
 		{
-			m_Parent.isUse = true;
 			m_Parent.value = parent;
 
 			return this;
 		}
 		public IItemBuilder SetPosition(Vector3 position)
 		{
-			m_Position.isUse = true;
 			m_Position.value = position;
 
 			return this;
 		}
 		public IItemBuilder SetLocalPosition(Vector3 localPosition)
 		{
-			m_LocalPosition.isUse = true;
 			m_LocalPosition.value = localPosition;
 
 			return this;
 		}
 		public IItemBuilder SetRotation(Quaternion rotation)
 		{
-			m_Rotation.isUse = true;
 			m_Rotation.value = rotation;
 
 			return this;
 		}
 		public IItemBuilder SetLocalRotation(Quaternion localRotation)
 		{
-			m_LocalRotation.isUse = true;
 			m_LocalRotation.value = localRotation;
 
 			return this;
 		}
 		public IItemBuilder SetScale(Vector3 scale)
 		{
-			m_Scale.isUse = true;
 			m_Scale.value = scale;
 
 			return this;
@@ -363,32 +356,52 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 
 		public virtual void Reset()
 		{
-			m_Name.isUse = false;
 			m_Name.value = string.Empty;
+			m_Name.isUse = false;
 
-			m_Active.isUse = false;
 			m_Active.value = false;
+			m_Active.isUse = false;
 
-			m_AutoInit.isUse = false;
-			m_AutoInit.value = false;
+			m_AutoInit.value = true;
 
-			m_Parent.isUse = false;
 			m_Parent.value = null;
+			m_Parent.isUse = false;
 
-			m_Position.isUse = false;
 			m_Position.value = Vector3.zero;
+			m_Position.isUse = false;
 
-			m_Rotation.isUse = false;
 			m_Rotation.value = Quaternion.identity;
+			m_Rotation.isUse = false;
 
-			m_Scale.isUse = false;
 			m_Scale.value = Vector3.one;
+			m_Scale.isUse = false;
 		}
 
 		public class ItemProperty<T>
 		{
+			private T m_Value;
+
 			public bool isUse { get; set; }
-			public T value { get; set; }
+			public T value
+			{
+				get => m_Value;
+				set
+				{
+					isUse = true;
+					m_Value = value;
+				}
+			}
+
+			public ItemProperty()
+			{
+				m_Value = default;
+				isUse = false;
+			}
+			public ItemProperty(T value)
+			{
+				m_Value = value;
+				isUse = true;
+			}
 		}
 	}
 }

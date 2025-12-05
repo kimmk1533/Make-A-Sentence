@@ -20,10 +20,14 @@ public class GameManager : SerializedSingleton<GameManager>
 
 	#region 매니저
 	// Game Managers
-
+	private static PlayerManager M_Player => PlayerManager.Instance;
+	private static EnemyManager M_Enemy => EnemyManager.Instance;
+	private static ProjectileManager M_Projectile => ProjectileManager.Instance;
+	private static MagicManager M_Magic => MagicManager.Instance;
 
 	// UI Managers
-
+	private static WordManager M_Word => WordManager.Instance;
+	private static SentenceManager M_Sentence => SentenceManager.Instance;
 	#endregion
 
 	#region 초기화 & 마무리화 함수
@@ -35,7 +39,21 @@ public class GameManager : SerializedSingleton<GameManager>
 		base.Initialize();
 		base.InitializeMain();
 
+		M_Player.Initialize();
+		M_Enemy.Initialize();
+		M_Projectile.Initialize();
+		M_Magic.Initialize();
 
+		M_Player.InitializeMain();
+		M_Enemy.InitializeMain();
+		M_Projectile.InitializeMain();
+		M_Magic.InitializeMain();
+
+		M_Word.Initialize();
+		M_Sentence.Initialize();
+
+		M_Word.InitializeMain();
+		M_Sentence.InitializeMain();
 	}
 	/// <summary>
 	/// 마무리화 함수 (게임 종료 시 호출)
@@ -80,6 +98,16 @@ public class GameManager : SerializedSingleton<GameManager>
 	#endregion
 
 	#region 유니티 콜백 함수
+	protected override void Awake()
+	{
+		base.Awake();
+
+		Initialize();
+	}
+	protected void OnApplicationQuit()
+	{
+		Finallize();
+	}
 	#endregion
 	#endregion
 
