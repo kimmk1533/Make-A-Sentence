@@ -155,7 +155,8 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 
 		item.gameObject.SetActive(false);
 
-		if (m_Parent != null)
+		if (m_Parent != null &&
+			item.transform.parent != m_Parent)
 			item.transform.SetParent(m_Parent);
 
 		item.transform.localPosition = Vector3.zero;

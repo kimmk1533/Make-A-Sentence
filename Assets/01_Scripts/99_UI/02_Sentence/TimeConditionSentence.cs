@@ -83,10 +83,7 @@ public class TimeConditionSentence : Sentence
 		m_Timer.Update();
 		if (m_Timer.TimeCheck(true))
 		{
-			float t1 = Time.realtimeSinceStartup;
 			ActivateSentence();
-			float t2 = Time.realtimeSinceStartup;
-			Debug.Log(t2 - t1);
 		}
 	}
 

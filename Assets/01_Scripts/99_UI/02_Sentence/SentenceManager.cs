@@ -72,6 +72,7 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	{
 		IWordObject player = M_Player.player;
 		List<IWordObject> wordObjectList = new List<IWordObject>();
+		LayerMask layerMask;
 
 		switch (word.wordType)
 		{
@@ -79,10 +80,14 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 				wordObjectList.Add(player);
 				break;
 			case E_WordType.Enemy:
-				wordObjectList.AddRange(player.GetNearbyWordObjectList(LayerMask.NameToLayer("Enemy")));
+				layerMask = LayerMask.NameToLayer("Enemy");
+
+				wordObjectList.AddRange(player.GetNearbyWordObjectList(selectingType, layerMask));
 				break;
 			case E_WordType.Magic:
-				wordObjectList.AddRange(player.GetNearbyWordObjectList(LayerMask.NameToLayer("PlayerMagic")));
+				layerMask = LayerMask.NameToLayer("PlayerMagic");
+
+				wordObjectList.AddRange(player.GetNearbyWordObjectList(selectingType, layerMask));
 				break;
 		}
 

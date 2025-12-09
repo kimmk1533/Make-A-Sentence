@@ -87,36 +87,29 @@ public abstract class WordObject<TItem> : ObjectPoolItem<TItem>, IWordObject whe
 		transform.position += movingSpeed * Time.deltaTime * (Vector3)movingDirection.normalized;
 	}
 
-	public List<IWordObject> GetNearbyWordObjectList(int layer)
+	public List<IWordObject> GetNearbyWordObjectList(E_SelectingType selectingType, int layer)
 	{
 		//return m_NearbyFinder.GetNearbyWordObjectList(layer);
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, nearbyRadius, 1 << layer)
 			.OrderBy(collider => Vector2.Distance(transform.position, collider.transform.position))
 			.ToArray();
 
-		List<IWordObject> wordObjectList = new List<IWordObject>();
+		List<IWordObject> nearbyObjectList = new List<IWordObject>();
+		if (colliders.Length == 0)
+			return nearbyObjectList;
 
 		foreach (Collider2D collider2d in colliders)
 		{
 			IWordObject wordObject = collider2d.GetComponent<IWordObject>();
 
 			if (wordObject == null)
+			{
+				Debug.Log("Gatcha");
 				continue;
+			}
 
-			wordObjectList.Add(wordObject);
+			nearbyObjectList.Add(wordObject);
 		}
-
-		return wordObjectList;
-	}
-
-	public void ActivateSentence(E_SelectingType selectingType, Word targetWord, Word magicWord)
-	{
-		string wordType = ((targetWord.wordType == E_WordType.Magic) ? "Player" : "") + targetWord.wordType.ToString();
-
-		List<IWordObject> nearbyObjectList = new List<IWordObject>();
-		nearbyObjectList.AddRange(GetNearbyWordObjectList(LayerMask.NameToLayer(wordType)));
-		if (nearbyObjectList.Count == 0)
-			return;
 
 		List<IWordObject> targetList = null;
 		switch (selectingType)
@@ -143,9 +136,18 @@ public abstract class WordObject<TItem> : ObjectPoolItem<TItem>, IWordObject whe
 				break;
 		}
 
-		foreach (IWordObject target in targetList)
+		return targetList;
+	}
+	public void ActivateSentence(E_SelectingType selectingType, Word targetWord, Word magicWord)
+	{
+		string wordType = ((targetWord.wordType == E_WordType.Magic) ? "Player" : "") + targetWord.wordType.ToString();
+
+		List<IWordObject> nearbyObjectList = new List<IWordObject>();
+		nearbyObjectList.AddRange(GetNearbyWordObjectList(selectingType, LayerMask.NameToLayer(wordType)));
+		
+		foreach (IWordObject nearbyObject in nearbyObjectList)
 		{
-			M_Magic.ActivateMagic(magicWord.wordKey, this, target);
+			M_Magic.ActivateMagic(magicWord.wordKey, this, nearbyObject);
 		}
 	}
 }

@@ -22,7 +22,6 @@ public class ProjectileMagic : Magic
 		float rotZ = Mathf.Atan2(newPos.y, newPos.x) * Mathf.Rad2Deg;
 
 		Projectile projectile = M_Projectile.GetBuilder(m_ProjectileKey)
-			.SetParent(null)
 			.SetPosition(subject.transform.position)
 			.SetRotation(Quaternion.Euler(0, 0, rotZ))
 			.SetActive(true)
