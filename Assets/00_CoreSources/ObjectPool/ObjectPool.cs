@@ -109,6 +109,8 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 
 			onItemInstantiated?.Invoke(newItem);
 
+			newItem.Initialize();
+
 			newItem.gameObject.SetActive(false);
 			if (m_Parent != null)
 				newItem.transform.SetParent(m_Parent);
@@ -196,6 +198,8 @@ public class ObjectPool<TItem> where TItem : ObjectPoolItem<TItem>
 
 			if (item == null)
 				continue;
+
+			item.Finallize();
 
 			GameObject.DestroyImmediate(item.gameObject);
 		}

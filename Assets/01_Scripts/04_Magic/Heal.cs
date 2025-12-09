@@ -12,47 +12,21 @@ public class Heal : Magic
 	#region 프로퍼티
 	#endregion
 
-	#region 매니저
-	#endregion
-
 	#region 이벤트
 
 	#region 이벤트 함수
-	protected override void OnMagicActivating()
+	protected override void OnMagicActivating(IWordObject subject, IWordObject target)
 	{
-		Debug.Log("Heal");
+		Debug.Log("[" + subject.ToString() + "] Activate Heal Magic!");
+		Debug.Log("Heal " + target.ToString());
 	}
 	#endregion
+	#endregion
+
+	#region 매니저
 	#endregion
 
 	#region 초기화 & 마무리화 함수
-	/// <summary>
-	/// 초기화 함수
-	/// </summary>
-	public override void Initialize(IWordObject subject, IWordObject target)
-	{
-		base.Initialize(subject, target);
-
-
-	}
-	/// <summary>
-	/// 마무리화 함수
-	/// </summary>
-	public override void Finallize()
-	{
-
-		base.Finallize();
-	}
-	#endregion
-
-	#region 유니티 콜백 함수
 	#endregion
 	#endregion
-
-	public override void Activate()
-	{
-		Debug.Log("Heal " + m_Target.ToString());
-
-		base.Activate();
-	}
 }

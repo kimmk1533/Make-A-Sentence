@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class Enemy : ObjectPoolItem<Enemy>, IWordObject
+public class Enemy : WordObject<Enemy>
 {
 	#region 기본 템플릿
 	#region 변수
@@ -12,11 +12,6 @@ public class Enemy : ObjectPoolItem<Enemy>, IWordObject
 	#endregion
 
 	#region 프로퍼티
-	[field: SerializeField]
-	public float movingSpeed { get; set; }
-	[field: SerializeField]
-	public float nearbyRadius { get; set; }
-	public string wordKey => poolKey;
 	#endregion
 
 	#region 이벤트
@@ -34,33 +29,38 @@ public class Enemy : ObjectPoolItem<Enemy>, IWordObject
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수
+	/// 초기화 함수 (복제될 때)
 	/// </summary>
-	public virtual void Initialize()
+	public override void Initialize()
 	{
+		base.Initialize();
+
+		//m_NearbyFinder.findingLayerMask = LayerMask.GetMask("Player", "Enemy", "PlayerMagic", "EnemyMagic");
+
 		m_AttackTimer = new UtilClass.Timer();
 		m_AttackTimer.onTime += CreateProjectile;
 		m_AttackTimer.Pause();
 	}
 	/// <summary>
-	/// 마무리화 함수
+	/// 마무리화 함수 (메모리에서 정리될 때)
 	/// </summary>
-	public virtual void Finallize()
+	public override void Finallize()
 	{
 		m_AttackTimer = null;
+
+		base.Finallize();
 	}
 
 	/// <summary>
-	/// 초기화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 초기화 함수 (스폰될 때)
 	/// </summary>
 	public override void InitializePoolItem()
 	{
 		base.InitializePoolItem();
 
-
 	}
 	/// <summary>
-	/// 마무리화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 마무리화 함수 (디스폰될 때)
 	/// </summary>
 	public override void FinallizePoolItem()
 	{
@@ -79,18 +79,15 @@ public class Enemy : ObjectPoolItem<Enemy>, IWordObject
 	#endregion
 	#endregion
 
-	public IWordObjectManager GetManager() => M_Enemy;
-
-	private void Move()
+	protected override void Move()
 	{
-		Vector2 dir = M_Player.GetPlayerPosition() - transform.position;
-		dir.Normalize();
+		movingDirection = M_Player.GetPlayerPosition() - transform.position;
 
 		float speed = movingSpeed * Time.deltaTime;
 		if (speed > Vector2.Distance(M_Player.GetPlayerPosition(), transform.position))
 			speed = Vector2.Distance(M_Player.GetPlayerPosition(), transform.position);
 
-		transform.position += (Vector3)dir * speed;
+		transform.position += (Vector3)movingDirection.normalized * speed;
 	}
 
 	public void GiveDamage(float damage)

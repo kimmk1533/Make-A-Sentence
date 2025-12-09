@@ -83,7 +83,10 @@ public class TimeConditionSentence : Sentence
 		m_Timer.Update();
 		if (m_Timer.TimeCheck(true))
 		{
+			float t1 = Time.realtimeSinceStartup;
 			ActivateSentence();
+			float t2 = Time.realtimeSinceStartup;
+			Debug.Log(t2 - t1);
 		}
 	}
 
@@ -96,18 +99,6 @@ public class TimeConditionSentence : Sentence
 	}
 	#endregion
 	#endregion
-
-	protected override void ActivateSentence()
-	{
-		if (isCompleted == false)
-			return;
-
-		List<IWordObject> subjectList = M_Sentence.GetWordObjectList(m_SubjectSelectingType, m_SubjectWord);
-		foreach (IWordObject subject in subjectList)
-		{
-			subject.ActivateSentence(m_TargetSelectingType, m_TargetWord, m_MagicWord);
-		}
-	}
 
 	public override string ToString()
 	{

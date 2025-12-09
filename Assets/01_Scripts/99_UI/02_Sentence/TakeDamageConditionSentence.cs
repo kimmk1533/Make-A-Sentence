@@ -65,16 +65,4 @@ public class TakeDamageConditionSentence : Sentence
 	#region 유니티 콜백 함수
 	#endregion
 	#endregion
-
-	protected override void ActivateSentence()
-	{
-		if (isCompleted == false)
-			return;
-
-		List<IWordObject> subjectList = M_Sentence.GetWordObjectList(m_SubjectSelectingType, m_SubjectWord);
-		foreach (IWordObject subject in subjectList)
-		{
-			subject.ActivateSentence(m_TargetSelectingType, m_TargetWord, m_MagicWord);
-		}
-	}
 }

@@ -84,15 +84,4 @@ public class DespawnConditionSentence : Sentence
 	#endregion
 
 	private void ActivateSentence<TItem>(ObjectPoolItem<TItem> poolItem) where TItem : ObjectPoolItem<TItem> => ActivateSentence();
-	protected override void ActivateSentence()
-	{
-		if (isCompleted == false)
-			return;
-
-		List<IWordObject> subjectList = M_Sentence.GetWordObjectList(m_SubjectSelectingType, m_SubjectWord);
-		foreach (IWordObject subject in subjectList)
-		{
-			subject.ActivateSentence(m_TargetSelectingType, m_TargetWord, m_MagicWord);
-		}
-	}
 }

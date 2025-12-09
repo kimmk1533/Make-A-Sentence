@@ -66,12 +66,12 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 	/// </summary>
 	public override void Finallize()
 	{
-		base.Finallize();
-
 		foreach (var item in m_ObjectPoolMap)
 		{
 			item.Value.Dispose();
 		}
+
+		base.Finallize();
 	}
 
 	/// <summary>
@@ -99,8 +99,6 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 	/// </summary>
 	public override void FinallizeMain()
 	{
-		base.FinallizeMain();
-
 		for (int i = 0; i < m_Origins.Count; ++i)
 		{
 			OriginInfo originInfo = m_Origins[i];
@@ -115,6 +113,8 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 
 			pool.Finallize();
 		}
+
+		base.FinallizeMain();
 	}
 	#endregion
 

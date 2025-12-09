@@ -5,19 +5,13 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : ObjectPoolItem<Player>, IWordObject
+public class Player : WordObject<Player>
 {
 	#region 기본 템플릿
 	#region 변수
-	private Vector2 m_MovingDirection;
 	#endregion
 
 	#region 프로퍼티
-	[field: SerializeField]
-	public float movingSpeed { get; set; }
-	[field: SerializeField]
-	public float nearbyRadius { get; set; }
-	public string wordKey => poolKey;
 	#endregion
 
 	#region 이벤트
@@ -34,22 +28,26 @@ public class Player : ObjectPoolItem<Player>, IWordObject
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수
+	/// 초기화 함수 (복제될 때)
 	/// </summary>
-	public void Initialize()
+	public override void Initialize()
 	{
+		base.Initialize();
 
+		//m_NearbyFinder.findingLayerMask = LayerMask.GetMask("Player", "Enemy", "PlayerMagic", "EnemyMagic");
 	}
 	/// <summary>
-	/// 마무리화 함수
+	/// 마무리화 함수 (메모리에서 정리될 때)
 	/// </summary>
-	public void Finallize()
+	public override void Finallize()
 	{
 
+
+		base.Finallize();
 	}
 
 	/// <summary>
-	/// 초기화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 초기화 함수 (스폰될 때)
 	/// </summary>
 	public override void InitializePoolItem()
 	{
@@ -57,7 +55,7 @@ public class Player : ObjectPoolItem<Player>, IWordObject
 
 	}
 	/// <summary>
-	/// 마무리화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 마무리화 함수 (디스폰될 때)
 	/// </summary>
 	public override void FinallizePoolItem()
 	{
@@ -70,7 +68,7 @@ public class Player : ObjectPoolItem<Player>, IWordObject
 	#region 유니티 콜백 함수
 	private void OnMove(InputValue inputValue)
 	{
-		m_MovingDirection = inputValue.Get<Vector2>();
+		movingDirection = inputValue.Get<Vector2>();
 	}
 
 	private void Update()
@@ -79,13 +77,6 @@ public class Player : ObjectPoolItem<Player>, IWordObject
 	}
 	#endregion
 	#endregion
-
-	public IWordObjectManager GetManager() => M_Player;
-
-	private void Move()
-	{
-		transform.position += (Vector3)(m_MovingDirection * movingSpeed * Time.deltaTime);
-	}
 
 	public void GiveDamage(float damage)
 	{

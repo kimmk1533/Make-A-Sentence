@@ -3,13 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public interface IPoolItem
-{
-	public void InitializePoolItem();
-	public void FinallizePoolItem();
-}
-
-public abstract class ObjectPoolItem<TItem> : SerializedMonoBehaviour, IPoolItem where TItem : ObjectPoolItem<TItem>
+public abstract class ObjectPoolItem<TItem> : SerializedMonoBehaviour where TItem : ObjectPoolItem<TItem>
 {
 	#region 기본 템플릿
 	#region 변수
@@ -33,7 +27,16 @@ public abstract class ObjectPoolItem<TItem> : SerializedMonoBehaviour, IPoolItem
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 초기화 함수 (복제될 때)
+	/// </summary>
+	public abstract void Initialize();
+	/// <summary>
+	/// 마무리화 함수 (메모리에서 정리될 때)
+	/// </summary>
+	public abstract void Finallize();
+
+	/// <summary>
+	/// 초기화 함수 (스폰될 때)
 	/// </summary>
 	public virtual void InitializePoolItem()
 	{
@@ -42,14 +45,14 @@ public abstract class ObjectPoolItem<TItem> : SerializedMonoBehaviour, IPoolItem
 		onSpawn?.Invoke(this as TItem);
 	}
 	/// <summary>
-	/// 마무리화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 마무리화 함수 (디스폰될 때)
 	/// </summary>
 	public virtual void FinallizePoolItem()
 	{
+		onDespawn?.Invoke(this as TItem);
+
 		onSpawn = null;
 		onDespawn = null;
-
-		onDespawn?.Invoke(this as TItem);
 
 		isSpawning = false;
 	}

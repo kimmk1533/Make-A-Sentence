@@ -41,31 +41,30 @@ public class Word : ObjectPoolItem<Word>
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수
+	/// 초기화 함수 (복제될 때)
 	/// </summary>
-	public virtual void Initialize()
+	public override void Initialize()
 	{
 
 	}
 	/// <summary>
-	/// 마무리화 함수
+	/// 마무리화 함수 (메모리에서 정리될 때)
 	/// </summary>
-	public virtual void Finallize()
+	public override void Finallize()
 	{
 
 	}
 
 	/// <summary>
-	/// 초기화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 초기화 함수 (스폰될 때)
 	/// </summary>
 	public override void InitializePoolItem()
 	{
 		base.InitializePoolItem();
 
-
 	}
 	/// <summary>
-	/// 마무리화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
+	/// 마무리화 함수 (디스폰될 때)
 	/// </summary>
 	public override void FinallizePoolItem()
 	{

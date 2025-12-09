@@ -9,6 +9,7 @@ public class MagicManager : SerializedSingleton<MagicManager>
 {
 	#region 기본 템플릿
 	#region 변수
+	private Dictionary<string, Magic> m_MagicMap = null;
 	#endregion
 
 	#region 프로퍼티
@@ -32,7 +33,7 @@ public class MagicManager : SerializedSingleton<MagicManager>
 	{
 		base.Initialize();
 
-
+		m_MagicMap = new Dictionary<string, Magic>();
 	}
 	/// <summary>
 	/// 기본 마무리화 함수 (게임 종료 시 호출)
@@ -41,7 +42,7 @@ public class MagicManager : SerializedSingleton<MagicManager>
 	{
 		base.Finallize();
 
-
+		m_MagicMap = null;
 	}
 
 	/// <summary>
@@ -51,7 +52,7 @@ public class MagicManager : SerializedSingleton<MagicManager>
 	{
 		base.InitializeMain();
 
-
+		//m_MagicMap.Add("FireBall", new FireBall());
 	}
 	/// <summary>
 	/// 메인 마무리화 함수 (본인 Main Scene 나갈 시 호출)
@@ -60,7 +61,7 @@ public class MagicManager : SerializedSingleton<MagicManager>
 	{
 		base.FinallizeMain();
 
-
+		m_MagicMap.Clear();
 	}
 	#endregion
 
@@ -70,16 +71,18 @@ public class MagicManager : SerializedSingleton<MagicManager>
 
 	public void ActivateMagic(string key, IWordObject subject, IWordObject target)
 	{
+		if (m_MagicMap.TryGetValue(key, out Magic magic) == true)
+		{
+			magic.Activate(subject, target);
+			return;
+		}
+
 		Type type = Type.GetType(key);
 		if (type == null)
 			return;
 
-		object instance = Activator.CreateInstance(type);
-		if (instance is Magic magic)
-		{
-			magic.Initialize(subject, target);
-
-			magic.Activate();
-		}
+		magic = (Magic)Activator.CreateInstance(type);
+		m_MagicMap.Add(key, magic);
+		magic.Activate(subject, target);
 	}
 }

@@ -39,19 +39,23 @@ public class GameManager : SerializedSingleton<GameManager>
 		base.Initialize();
 		base.InitializeMain();
 
+		// Game Init
 		M_Player.Initialize();
 		M_Enemy.Initialize();
 		M_Projectile.Initialize();
 		M_Magic.Initialize();
 
+		// UI Init
+		M_Word.Initialize();
+		M_Sentence.Initialize();
+
+		// Game Init Main Scene
 		M_Player.InitializeMain();
 		M_Enemy.InitializeMain();
 		M_Projectile.InitializeMain();
 		M_Magic.InitializeMain();
 
-		M_Word.Initialize();
-		M_Sentence.Initialize();
-
+		// UI Init Main Scene
 		M_Word.InitializeMain();
 		M_Sentence.InitializeMain();
 	}
@@ -60,7 +64,25 @@ public class GameManager : SerializedSingleton<GameManager>
 	/// </summary>
 	public override void Finallize()
 	{
+		// UI Final Main Scene
+		M_Sentence.FinallizeMain();
+		M_Word.FinallizeMain();
 
+		// Game Final Main Scene
+		M_Magic.FinallizeMain();
+		M_Projectile.FinallizeMain();
+		M_Enemy.FinallizeMain();
+		M_Player.FinallizeMain();
+
+		// UI Final
+		M_Word.Finallize();
+		M_Sentence.Finallize();
+
+		// Game Final
+		M_Player.Finallize();
+		M_Enemy.Finallize();
+		M_Projectile.Finallize();
+		M_Magic.Finallize();
 
 		base.FinallizeMain();
 		base.Finallize();
