@@ -26,7 +26,9 @@ public class ProjectileMagic : Magic
 			.SetRotation(Quaternion.Euler(0, 0, rotZ))
 			.SetActive(true)
 			.Spawn();
-		projectile.Initialize();
+
+		projectile.subject = subject;
+		projectile.target = target;
 	}
 	#endregion
 	#endregion

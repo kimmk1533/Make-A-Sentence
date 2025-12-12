@@ -1,22 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : WordObject<Player>
+public class Player : WordObject<Player, PlayerStat>, IDamageSender, IDamageReceiver
 {
 	#region 기본 템플릿
 	#region 변수
+	protected const float c_MinDamage = 0f;
+
 	#endregion
 
 	#region 프로퍼티
+	public Stat stat => m_Stat;
+
 	#endregion
 
 	#region 이벤트
 	public event System.Action onGiveDamage = null;
 	public event System.Action onTakeDamage = null;
+	public event System.Action onDeath = null;
 
 	#region 이벤트 함수
 	#endregion
@@ -33,15 +37,13 @@ public class Player : WordObject<Player>
 	public override void Initialize()
 	{
 		base.Initialize();
-
-		//m_NearbyFinder.findingLayerMask = LayerMask.GetMask("Player", "Enemy", "PlayerMagic", "EnemyMagic");
 	}
 	/// <summary>
 	/// 마무리화 함수 (메모리에서 정리될 때)
 	/// </summary>
 	public override void Finallize()
 	{
-
+		m_Stat = null;
 
 		base.Finallize();
 	}
@@ -52,6 +54,7 @@ public class Player : WordObject<Player>
 	public override void InitializePoolItem()
 	{
 		base.InitializePoolItem();
+
 
 	}
 	/// <summary>
@@ -78,12 +81,29 @@ public class Player : WordObject<Player>
 	#endregion
 	#endregion
 
-	public void GiveDamage(float damage)
+	public void GiveDamage(IDamageReceiver damageReceiver)
 	{
 		onGiveDamage?.Invoke();
+
+		float damage = m_Stat.atkPower;
+		damageReceiver.TakeDamage(this, damage);
 	}
-	public void TakeDamage(float damage)
+	public void TakeDamage(IDamageSender damageSender, float damage)
 	{
+		m_Stat.hp -= Mathf.Max(c_MinDamage, damage - m_Stat.defPower);
+		m_Stat.hp = Mathf.Clamp(m_Stat.hp, 0f, m_Stat.maxHp);
+
 		onTakeDamage?.Invoke();
+
+		if (m_Stat.hp <= 0f)
+		{
+			Death();
+		}
+	}
+	public void Death()
+	{
+		onDeath?.Invoke();
+
+		Debug.Log("Player Death");
 	}
 }

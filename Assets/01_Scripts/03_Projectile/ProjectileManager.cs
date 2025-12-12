@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class ProjectileManager : ObjectManager<ProjectileManager, Projectile>, IWordObjectManager
+public class ProjectileManager : ObjectManager<ProjectileManager, Projectile>
 {
 	#region 기본 템플릿
 	#region 변수

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class PlayerManager : ObjectManager<PlayerManager, Player>, IWordObjectManager
+public class PlayerManager : ObjectManager<PlayerManager, Player>
 {
 	#region 기본 템플릿
 	#region 변수

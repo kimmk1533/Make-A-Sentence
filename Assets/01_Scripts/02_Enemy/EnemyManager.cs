@@ -4,7 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class EnemyManager : ObjectManager<EnemyManager, Enemy>, IWordObjectManager
+public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 {
 	#region 기본 템플릿
 	#region 변수

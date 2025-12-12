@@ -5,32 +5,21 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
-public abstract class WordObject<TItem> : ObjectPoolItem<TItem>, IWordObject where TItem : ObjectPoolItem<TItem>
+public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObject where TItem : ObjectPoolItem<TItem> where TStat : Stat
 {
 	#region 기본 템플릿
 	#region 변수
+	[SerializeField]
+	protected TStat m_Stat = null;
+
 	[SerializeField, ChildComponent("Renderer")]
 	protected SpriteRenderer m_Renderer = null;
-
-	[SerializeField, ChildComponent("Nearby Finder"), System.Obsolete]
-	protected NearbyFinder m_NearbyFinder = null;
 	#endregion
 
 	#region 프로퍼티
 	public string wordKey => poolKey;
 
 	protected Vector2 movingDirection { get; set; }
-
-	[field: SerializeField]
-	public float movingSpeed { get; set; }
-	[property: ShowInInspector, OdinSerialize]
-	public float nearbyRadius
-	{
-		get;
-		set;
-		//get => m_NearbyFinder.radius;
-		//set => m_NearbyFinder.radius = value;
-	}
 	#endregion
 
 	#region 이벤트
@@ -64,15 +53,14 @@ public abstract class WordObject<TItem> : ObjectPoolItem<TItem>, IWordObject whe
 	{
 		base.InitializePoolItem();
 
-		//m_NearbyFinder.Initialize();
-		//m_NearbyFinder.gameObject.SetActive(true);
+
 	}
 	/// <summary>
 	/// 마무리화 함수 (디스폰될 때)
 	/// </summary>
 	public override void FinallizePoolItem()
 	{
-		//m_NearbyFinder.Finallize();
+
 
 		base.FinallizePoolItem();
 	}
@@ -84,13 +72,19 @@ public abstract class WordObject<TItem> : ObjectPoolItem<TItem>, IWordObject whe
 
 	protected virtual void Move()
 	{
-		transform.position += movingSpeed * Time.deltaTime * (Vector3)movingDirection.normalized;
+		transform.position += m_Stat.movingSpeed * Time.deltaTime * (Vector3)movingDirection.normalized;
 	}
 
 	public List<IWordObject> GetNearbyWordObjectList(E_SelectingType selectingType, int layer)
 	{
-		//return m_NearbyFinder.GetNearbyWordObjectList(layer);
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, nearbyRadius, 1 << layer)
+		List<Collider2D> exceptColliderList = new List<Collider2D>();
+		exceptColliderList.Add(null);
+		Collider2D collider2D = GetComponent<Collider2D>();
+		if (collider2D != null)
+			exceptColliderList.Add(collider2D);
+
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, m_Stat.nearbyRadius, 1 << layer)
+			.Except(exceptColliderList)
 			.OrderBy(collider => Vector2.Distance(transform.position, collider.transform.position))
 			.ToArray();
 
@@ -120,13 +114,16 @@ public abstract class WordObject<TItem> : ObjectPoolItem<TItem>, IWordObject whe
 			case E_SelectingType.Random:
 				int count = Random.Range(1, nearbyObjectList.Count);
 
-				for (int i = 0; i < count; ++i)
+				if (count != 1)
 				{
-					int j = Random.Range(i + 1, nearbyObjectList.Count);
+					for (int i = 0; i < count; ++i)
+					{
+						int j = Random.Range(i + 1, nearbyObjectList.Count);
 
-					IWordObject temp = nearbyObjectList[i];
-					nearbyObjectList[i] = nearbyObjectList[j];
-					nearbyObjectList[j] = temp;
+						IWordObject temp = nearbyObjectList[i];
+						nearbyObjectList[i] = nearbyObjectList[j];
+						nearbyObjectList[j] = temp;
+					}
 				}
 
 				targetList = nearbyObjectList.GetRange(0, count);
@@ -144,7 +141,7 @@ public abstract class WordObject<TItem> : ObjectPoolItem<TItem>, IWordObject whe
 
 		List<IWordObject> nearbyObjectList = new List<IWordObject>();
 		nearbyObjectList.AddRange(GetNearbyWordObjectList(selectingType, LayerMask.NameToLayer(wordType)));
-		
+
 		foreach (IWordObject nearbyObject in nearbyObjectList)
 		{
 			M_Magic.ActivateMagic(magicWord.wordKey, this, nearbyObject);

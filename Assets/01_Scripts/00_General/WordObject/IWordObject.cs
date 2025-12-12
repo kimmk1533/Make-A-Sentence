@@ -10,10 +10,6 @@ public interface IWordObject
 
 	public string wordKey { get; }
 
-	public float movingSpeed { get; set; }
-	public float nearbyRadius { get; set; }
-	
 	public List<IWordObject> GetNearbyWordObjectList(E_SelectingType selectingType, int layer);
-
 	public void ActivateSentence(E_SelectingType selectingType, Word targetWord, Word magicWord);
 }

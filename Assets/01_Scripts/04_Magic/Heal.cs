@@ -17,8 +17,11 @@ public class Heal : Magic
 	#region 이벤트 함수
 	protected override void OnMagicActivating(IWordObject subject, IWordObject target)
 	{
-		Debug.Log("[" + subject.ToString() + "] Activate Heal Magic!");
-		Debug.Log("Heal " + target.ToString());
+		IDamageSender damageSender = subject.transform.GetComponent<IDamageSender>();
+		IDamageReceiver damageReceiver = target.transform.GetComponent<IDamageReceiver>();
+
+		damageReceiver.TakeDamage(damageSender, -5f);
+		damageReceiver.stat.hp = Mathf.Min(damageReceiver.stat.hp + 5f, damageReceiver.stat.maxHp);
 	}
 	#endregion
 	#endregion
