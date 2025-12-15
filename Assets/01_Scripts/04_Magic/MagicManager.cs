@@ -79,7 +79,7 @@ public class MagicManager : SerializedSingleton<MagicManager>
 
 		Type type = Type.GetType(key);
 		if (type == null)
-			return;
+			throw new Exception(key + " Type 이 null 임");
 
 		magic = (Magic)Activator.CreateInstance(type);
 		m_MagicMap.Add(key, magic);

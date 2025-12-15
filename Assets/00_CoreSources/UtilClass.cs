@@ -9,37 +9,6 @@ using UnityEngine.InputSystem;
 
 public static class UtilClass
 {
-	public static void NullCheckGetComponent<T>(this Component com, ref T obj) where T : Component
-	{
-		if (obj == null)
-		{
-			obj = com.GetComponent<T>();
-
-			if (obj == null)
-				Debug.LogError("없는 컴포넌트를 GetComponent함");
-		}
-	}
-	public static void NullCheckGetComponentInParent<T>(this Component com, ref T obj) where T : Component
-	{
-		if (obj == null)
-		{
-			obj = com.GetComponentInParent<T>();
-
-			if (obj == null)
-				Debug.LogError("없는 컴포넌트를 GetComponentInParent함");
-		}
-	}
-	public static void NullCheckGetComponentInChilderen<T>(this Component com, ref T obj) where T : Component
-	{
-		if (obj == null)
-		{
-			obj = com.GetComponentInChildren<T>();
-
-			if (obj == null)
-				Debug.LogError("없는 컴포넌트를 GetComponentInChildren함");
-		}
-	}
-
 	public static Vector2 GetMouseWorldPosition2D()
 	{
 		Camera worldCamera = Camera.main;
@@ -340,13 +309,22 @@ public static class ExtensionMethods
 		if (index1 == index2)
 			return;
 
-		if (list.Count <= index1 ||
-			list.Count <= index2)
+		if (list.Count <= index1 || list.Count <= index2)
 			return;
 
 		T temp = list[index1];
 		list[index1] = list[index2];
 		list[index2] = temp;
+	}
+	public static void Shuffle<T>(this List<T> list)
+	{
+		System.Random random = new System.Random();
+		for (int i = list.Count - 1; i > 0; --i)
+		{
+			int j = random.Next(0, i + 1);
+
+			list.Swap(i, j);
+		}
 	}
 	public static void EnqueueRange<T>(this Queue<T> queue, IEnumerable<T> collection)
 	{
@@ -367,6 +345,37 @@ public static class ExtensionMethods
 		foreach (var item in collection)
 		{
 			dictionary.Add(item.Key, item.Value);
+		}
+	}
+
+	public static void NullCheckGetComponent<T>(this Component com, ref T obj) where T : Component
+	{
+		if (obj == null)
+		{
+			obj = com.GetComponent<T>();
+
+			if (obj == null)
+				Debug.LogError("없는 컴포넌트를 GetComponent함");
+		}
+	}
+	public static void NullCheckGetComponentInParent<T>(this Component com, ref T obj) where T : Component
+	{
+		if (obj == null)
+		{
+			obj = com.GetComponentInParent<T>();
+
+			if (obj == null)
+				Debug.LogError("없는 컴포넌트를 GetComponentInParent함");
+		}
+	}
+	public static void NullCheckGetComponentInChilderen<T>(this Component com, ref T obj) where T : Component
+	{
+		if (obj == null)
+		{
+			obj = com.GetComponentInChildren<T>();
+
+			if (obj == null)
+				Debug.LogError("없는 컴포넌트를 GetComponentInChildren함");
 		}
 	}
 

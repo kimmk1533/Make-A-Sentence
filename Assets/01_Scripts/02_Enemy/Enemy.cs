@@ -34,7 +34,7 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수 (복제될 때)
+	/// 초기화 함수 (생성될 때)
 	/// </summary>
 	public override void Initialize()
 	{
@@ -44,7 +44,7 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 		m_AttackTimer.Pause();
 	}
 	/// <summary>
-	/// 마무리화 함수 (메모리에서 정리될 때)
+	/// 마무리화 함수 (파괴될 때)
 	/// </summary>
 	public override void Finallize()
 	{
@@ -151,7 +151,7 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 
 		projectile.subject = this;
 		projectile.target = M_Player.player;
-		projectile.gameObject.layer = LayerMask.NameToLayer("EnemyMagic");
-		projectile.onDespawn += (self) => { self.gameObject.layer = LayerMask.NameToLayer("PlayerMagic"); };
+		projectile.gameObject.layer = LayerMask.NameToLayer("Enemy Magic");
+		projectile.onDespawn += (self) => { self.gameObject.layer = LayerMask.NameToLayer("Player Magic"); };
 	}
 }

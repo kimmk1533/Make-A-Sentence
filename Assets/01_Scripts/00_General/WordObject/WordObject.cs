@@ -34,13 +34,13 @@ public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObj
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수 (복제될 때)
+	/// 초기화 함수 (생성될 때)
 	/// </summary>
 	public override void Initialize()
 	{
 	}
 	/// <summary>
-	/// 마무리화 함수 (메모리에서 정리될 때)
+	/// 마무리화 함수 (파괴될 때)
 	/// </summary>
 	public override void Finallize()
 	{
@@ -75,7 +75,7 @@ public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObj
 		transform.position += m_Stat.movingSpeed * Time.deltaTime * (Vector3)movingDirection.normalized;
 	}
 
-	public List<IWordObject> GetNearbyWordObjectList(E_SelectingType selectingType, int layer)
+	public List<IWordObject> GetNearbyWordObjectList(E_SelectingType selectingType, int layerMask)
 	{
 		List<Collider2D> exceptColliderList = new List<Collider2D>();
 		exceptColliderList.Add(null);
@@ -83,7 +83,7 @@ public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObj
 		if (collider2D != null)
 			exceptColliderList.Add(collider2D);
 
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, m_Stat.nearbyRadius, 1 << layer)
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, m_Stat.nearbyRadius, layerMask)
 			.Except(exceptColliderList)
 			.OrderBy(collider => Vector2.Distance(transform.position, collider.transform.position))
 			.ToArray();
@@ -108,27 +108,17 @@ public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObj
 		List<IWordObject> targetList = null;
 		switch (selectingType)
 		{
-			case E_SelectingType.Closest:
+			case E_SelectingType.Nearest:
 				targetList = nearbyObjectList.GetRange(0, 1);
 				break;
 			case E_SelectingType.Random:
-				int count = Random.Range(1, nearbyObjectList.Count);
+				nearbyObjectList.Shuffle();
 
-				if (count != 1)
-				{
-					for (int i = 0; i < count; ++i)
-					{
-						int j = Random.Range(i + 1, nearbyObjectList.Count);
-
-						IWordObject temp = nearbyObjectList[i];
-						nearbyObjectList[i] = nearbyObjectList[j];
-						nearbyObjectList[j] = temp;
-					}
-				}
+				int count = Random.Range(0, nearbyObjectList.Count) + 1;
 
 				targetList = nearbyObjectList.GetRange(0, count);
 				break;
-			case E_SelectingType.Nearby:
+			case E_SelectingType.Around:
 				targetList = nearbyObjectList;
 				break;
 		}
@@ -137,14 +127,16 @@ public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObj
 	}
 	public void ActivateSentence(E_SelectingType selectingType, Word targetWord, Word magicWord)
 	{
-		string wordType = ((targetWord.wordType == E_WordType.Magic) ? "Player" : "") + targetWord.wordType.ToString();
+		int layerMask = LayerMask.GetMask(targetWord.wordType.ToString());
+		if (targetWord.wordType == E_WordType.Magic)
+			layerMask = LayerMask.GetMask("Player Magic", "Enemy Magic");
 
 		List<IWordObject> nearbyObjectList = new List<IWordObject>();
-		nearbyObjectList.AddRange(GetNearbyWordObjectList(selectingType, LayerMask.NameToLayer(wordType)));
+		nearbyObjectList.AddRange(GetNearbyWordObjectList(selectingType, layerMask));
 
 		foreach (IWordObject nearbyObject in nearbyObjectList)
 		{
-			M_Magic.ActivateMagic(magicWord.wordKey, this, nearbyObject);
+			M_Magic.ActivateMagic(magicWord.magicTitle.Replace(" ", ""), this, nearbyObject);
 		}
 	}
 }

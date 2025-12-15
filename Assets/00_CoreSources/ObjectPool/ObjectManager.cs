@@ -23,15 +23,15 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 	#endregion
 
 	#region 이벤트
-	public System.Action<TItem> onSpawn = null;
-	public System.Action<TItem> onDespawn = null;
+	public event System.Action<TItem> onSpawn = null;
+	public event System.Action<TItem> onDespawn = null;
 
 	#region 이벤트 함수
-	private void OnSpawnedItem(TItem poolItem)
+	private void OnItemSpawned(TItem poolItem)
 	{
 		onSpawn?.Invoke(poolItem);
 	}
-	private void OnDespawnedItem(TItem poolItem)
+	private void OnItemDespawned(TItem poolItem)
 	{
 		onDespawn?.Invoke(poolItem);
 	}
@@ -90,8 +90,8 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 
 			ObjectPool<TItem> pool = GetPool(originInfo.key);
 
-			pool.onItemSpawned += OnSpawnedItem;
-			pool.onItemDespawned += OnDespawnedItem;
+			pool.onItemSpawned += OnItemSpawned;
+			pool.onItemDespawned += OnItemDespawned;
 		}
 	}
 	/// <summary>
@@ -108,8 +108,8 @@ public abstract class ObjectManager<TSelf, TItem> : SerializedSingleton<TSelf> w
 
 			ObjectPool<TItem> pool = GetPool(originInfo.key);
 
-			pool.onItemSpawned -= OnSpawnedItem;
-			pool.onItemDespawned -= OnDespawnedItem;
+			pool.onItemSpawned -= OnItemSpawned;
+			pool.onItemDespawned -= OnItemDespawned;
 
 			pool.Finallize();
 		}

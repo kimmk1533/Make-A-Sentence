@@ -10,6 +10,6 @@ public interface IWordObject
 
 	public string wordKey { get; }
 
-	public List<IWordObject> GetNearbyWordObjectList(E_SelectingType selectingType, int layer);
+	public List<IWordObject> GetNearbyWordObjectList(E_SelectingType selectingType, int layerMask);
 	public void ActivateSentence(E_SelectingType selectingType, Word targetWord, Word magicWord);
 }

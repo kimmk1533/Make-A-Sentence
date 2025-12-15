@@ -8,7 +8,7 @@ using System.IO;
 public class ManagerEditor
 {
 	[MenuItem("Assets/Create/Manager Script", false, -230)]
-	private static void CreateCustomManager()
+	private static void CreateCustomScript()
 	{
 		string unityEditorPath = Path.GetDirectoryName(EditorApplication.applicationPath);
 

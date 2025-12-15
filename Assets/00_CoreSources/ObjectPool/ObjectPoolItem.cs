@@ -14,9 +14,6 @@ public abstract class ObjectPoolItem<TItem> : SerializedMonoBehaviour where TIte
 	public bool isSpawning { get; private set; }
 	#endregion
 
-	#region 매니저
-	#endregion
-
 	#region 이벤트
 	public event System.Action<TItem> onSpawn = null;
 	public event System.Action<TItem> onDespawn = null;
@@ -27,11 +24,11 @@ public abstract class ObjectPoolItem<TItem> : SerializedMonoBehaviour where TIte
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수 (복제될 때)
+	/// 초기화 함수 (생성될 때)
 	/// </summary>
 	public abstract void Initialize();
 	/// <summary>
-	/// 마무리화 함수 (메모리에서 정리될 때)
+	/// 마무리화 함수 (파괴될 때)
 	/// </summary>
 	public abstract void Finallize();
 

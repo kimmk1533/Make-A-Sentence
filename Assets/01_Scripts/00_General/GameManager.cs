@@ -24,10 +24,11 @@ public class GameManager : SerializedSingleton<GameManager>
 	private static EnemyManager M_Enemy => EnemyManager.Instance;
 	private static ProjectileManager M_Projectile => ProjectileManager.Instance;
 	private static MagicManager M_Magic => MagicManager.Instance;
-
-	// UI Managers
 	private static WordManager M_Word => WordManager.Instance;
 	private static SentenceManager M_Sentence => SentenceManager.Instance;
+
+	// UI Managers
+	private static SentenceUIElementManager M_SentenceUIElement => SentenceUIElementManager.Instance;
 	#endregion
 
 	#region 초기화 & 마무리화 함수
@@ -37,27 +38,30 @@ public class GameManager : SerializedSingleton<GameManager>
 	public override void Initialize()
 	{
 		base.Initialize();
-		base.InitializeMain();
 
 		// Game Init
 		M_Player.Initialize();
 		M_Enemy.Initialize();
 		M_Projectile.Initialize();
 		M_Magic.Initialize();
-
-		// UI Init
 		M_Word.Initialize();
 		M_Sentence.Initialize();
+
+		// UI Init
+		M_SentenceUIElement.Initialize();
+
+		base.InitializeMain();
 
 		// Game Init Main Scene
 		M_Player.InitializeMain();
 		M_Enemy.InitializeMain();
 		M_Projectile.InitializeMain();
 		M_Magic.InitializeMain();
-
-		// UI Init Main Scene
 		M_Word.InitializeMain();
 		M_Sentence.InitializeMain();
+
+		// UI Init Main Scene
+		M_SentenceUIElement.InitializeMain();
 	}
 	/// <summary>
 	/// 마무리화 함수 (게임 종료 시 호출)
@@ -65,26 +69,29 @@ public class GameManager : SerializedSingleton<GameManager>
 	public override void Finallize()
 	{
 		// UI Final Main Scene
-		M_Sentence.FinallizeMain();
-		M_Word.FinallizeMain();
+		M_SentenceUIElement.FinallizeMain();
 
 		// Game Final Main Scene
+		M_Sentence.FinallizeMain();
+		M_Word.FinallizeMain();
 		M_Magic.FinallizeMain();
 		M_Projectile.FinallizeMain();
 		M_Enemy.FinallizeMain();
 		M_Player.FinallizeMain();
 
+		base.FinallizeMain();
+
 		// UI Final
-		M_Word.Finallize();
-		M_Sentence.Finallize();
+		M_SentenceUIElement.Finallize();
 
 		// Game Final
-		M_Player.Finallize();
-		M_Enemy.Finallize();
-		M_Projectile.Finallize();
+		M_Word.Finallize();
+		M_Sentence.Finallize();
 		M_Magic.Finallize();
+		M_Projectile.Finallize();
+		M_Enemy.Finallize();
+		M_Player.Finallize();
 
-		base.FinallizeMain();
 		base.Finallize();
 	}
 

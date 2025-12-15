@@ -32,14 +32,14 @@ public class Player : WordObject<Player, PlayerStat>, IDamageSender, IDamageRece
 
 	#region 초기화 & 마무리화 함수
 	/// <summary>
-	/// 초기화 함수 (복제될 때)
+	/// 초기화 함수 (생성될 때)
 	/// </summary>
 	public override void Initialize()
 	{
 		base.Initialize();
 	}
 	/// <summary>
-	/// 마무리화 함수 (메모리에서 정리될 때)
+	/// 마무리화 함수 (파괴될 때)
 	/// </summary>
 	public override void Finallize()
 	{
