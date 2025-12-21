@@ -115,11 +115,11 @@ public class WordManager : ObjectManager<WordManager, Word>
 	#endregion
 	#endregion
 
-	public void SpawnDummyWord(WordUI wordUI)
+	public void SpawnDummyWord(WordUI wordUI, Transform parent, int siblingIndex)
 	{
 		m_DummyLayoutElement.minWidth = (wordUI.transform as RectTransform).sizeDelta.x;
-		m_DummyWord.transform.SetParent(wordUI.transform.parent);
-		m_DummyWord.transform.SetSiblingIndex(wordUI.transform.GetSiblingIndex());
+		m_DummyWord.transform.SetParent(parent);
+		m_DummyWord.transform.SetSiblingIndex(siblingIndex);
 		m_DummyWord.gameObject.SetActive(true);
 	}
 	public void DespawnDummyWord()

@@ -73,6 +73,8 @@ public class WordUI : SerializedMonoBehaviour, IBeginDragHandler, IDragHandler, 
 
 		// 인덱스(위치) 저장
 		m_PrevSiblingIndex = transform.GetSiblingIndex();
+		// 부모 저장
+		Transform parent = transform.parent;
 
 		// 부모 변경(Scroll View의 Viewport에서 벗어나기 위함)
 		transform.SetParent(M_Word.wordScrollView.transform);
@@ -82,7 +84,7 @@ public class WordUI : SerializedMonoBehaviour, IBeginDragHandler, IDragHandler, 
 			// 단어 인벤토리에 있었으면
 			case E_State.WordInventory:
 				// 더미 단어 생성
-				M_Word.SpawnDummyWord(this);
+				M_Word.SpawnDummyWord(this, parent, m_PrevSiblingIndex);
 				break;
 			// 문장에 들어가 있었으면
 			case E_State.Sentence:
@@ -193,7 +195,7 @@ public class WordUI : SerializedMonoBehaviour, IBeginDragHandler, IDragHandler, 
 				break;
 		}
 
-		// 단어가 "플레이어" 였을 때 앞의 UIElement(SelectingType) 오브젝트 키거나 끄기
+		// 단어가 "플레이어" 였을 때 앞의 UI Element(SelectingType) 오브젝트 키거나 끄기
 		SentenceUIElement uiElement = m_Blank.sentecne.ui.GetUIElementFrontBlank(m_Blank);
 		if (word != null &&
 			word.wordType == E_WordType.Player)

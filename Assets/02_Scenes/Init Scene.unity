@@ -291,11 +291,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  m_SubjectSelectingType: 0
-  m_TargetSelectingType: 2
   <subjectWord>k__BackingField: {fileID: 0}
   <targetWord>k__BackingField: {fileID: 0}
   <magicWord>k__BackingField: {fileID: 0}
+  <subjectSelectingType>k__BackingField: 0
+  <targetSelectingType>k__BackingField: 0
   m_Interval: 1
 --- !u!4 &129603762
 Transform:
@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 50
   m_Viewport: {fileID: 1079842318}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 1248311195}
@@ -700,11 +700,11 @@ MonoBehaviour:
   m_Content: {fileID: 507695201}
   m_Horizontal: 1
   m_Vertical: 0
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: -50
   m_Viewport: {fileID: 689966308}
   m_HorizontalScrollbar: {fileID: 253828842}
   m_VerticalScrollbar: {fileID: 0}
@@ -2033,11 +2033,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  m_SubjectSelectingType: 0
-  m_TargetSelectingType: 0
   <subjectWord>k__BackingField: {fileID: 0}
   <targetWord>k__BackingField: {fileID: 0}
   <magicWord>k__BackingField: {fileID: 0}
+  <subjectSelectingType>k__BackingField: 0
+  <targetSelectingType>k__BackingField: 0
 --- !u!114 &1169661577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2698,11 +2698,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  m_SubjectSelectingType: 0
-  m_TargetSelectingType: 2
   <subjectWord>k__BackingField: {fileID: 0}
   <targetWord>k__BackingField: {fileID: 0}
   <magicWord>k__BackingField: {fileID: 0}
+  <subjectSelectingType>k__BackingField: 0
+  <targetSelectingType>k__BackingField: 0
   m_Interval: 1
 --- !u!114 &1669911030
 MonoBehaviour:
@@ -2780,11 +2780,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  m_SubjectSelectingType: 0
-  m_TargetSelectingType: 0
   <subjectWord>k__BackingField: {fileID: 0}
   <targetWord>k__BackingField: {fileID: 0}
   <magicWord>k__BackingField: {fileID: 0}
+  <subjectSelectingType>k__BackingField: 0
+  <targetSelectingType>k__BackingField: 0
 --- !u!114 &1763346147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2892,11 +2892,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  m_SubjectSelectingType: 0
-  m_TargetSelectingType: 0
   <subjectWord>k__BackingField: {fileID: 0}
   <targetWord>k__BackingField: {fileID: 0}
   <magicWord>k__BackingField: {fileID: 0}
+  <subjectSelectingType>k__BackingField: 0
+  <targetSelectingType>k__BackingField: 0
 --- !u!114 &2092879710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3051,11 +3051,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  m_SubjectSelectingType: 0
-  m_TargetSelectingType: 0
   <subjectWord>k__BackingField: {fileID: 0}
   <targetWord>k__BackingField: {fileID: 0}
   <magicWord>k__BackingField: {fileID: 0}
+  <subjectSelectingType>k__BackingField: 0
+  <targetSelectingType>k__BackingField: 0
 --- !u!114 &2121108687
 MonoBehaviour:
   m_ObjectHideFlags: 0
