@@ -7,6 +7,7 @@ using UnityEngine;
 public interface IWordObject
 {
 	public Transform transform { get; }
+	public GameObject gameObject { get; }
 
 	public string wordKey { get; }
 

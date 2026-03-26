@@ -47,8 +47,6 @@ public class Projectile : WordObject<Projectile, ProjectileStat>
 	{
 		m_LifeTimeTimer = null;
 
-		m_Stat = null;
-
 		base.Finallize();
 	}
 

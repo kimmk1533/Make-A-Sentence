@@ -13,7 +13,7 @@ public class ManagerEditor
 		string unityEditorPath = Path.GetDirectoryName(EditorApplication.applicationPath);
 
 #if UNITY_6000_0_OR_NEWER
-		string path = Path.Combine(unityEditorPath, "Data", "Resources", "ScriptTemplates", "1-Scripting__Manager Script-NewManagerScript.cs.txt");
+		string path = Path.Combine(unityEditorPath, "Data", "Resources", "ScriptTemplates", "My Templates", "1-Scripting__Manager Script-NewManagerScript.cs.txt");
 #else
 		string path = Path.Combine(unityEditorPath, "Data", "Resources", "ScriptTemplates", "81-C# Script-NewBehaviourScript.cs.txt");
 #endif

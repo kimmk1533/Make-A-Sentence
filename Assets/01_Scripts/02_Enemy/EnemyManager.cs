@@ -8,6 +8,7 @@ public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 {
 	#region 기본 템플릿
 	#region 변수
+	private Coroutine m_SpawnEnemyCoroutine = null;
 	#endregion
 
 	#region 프로퍼티
@@ -50,14 +51,7 @@ public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 	{
 		base.InitializeMain();
 
-		for (int i = 0; i < 3; ++i)
-		{
-			GetBuilder("Enemy")
-				.SetActive(true)
-				.SetParent(null)
-				.SetPosition((Vector2.up * 2) + (Vector2.left * 5) + (Vector2.right * 5 * i))
-				.Spawn();
-		}
+		m_SpawnEnemyCoroutine = StartCoroutine(SpawnEnemy("Enemy", 1f));
 	}
 	/// <summary>
 	/// 메인 마무리화 함수 (본인 Main Scene 나갈 시 호출)
@@ -66,7 +60,8 @@ public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 	{
 		base.FinallizeMain();
 
-
+		if (m_SpawnEnemyCoroutine != null)
+			StopCoroutine(m_SpawnEnemyCoroutine);
 	}
 	#endregion
 
@@ -74,4 +69,21 @@ public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 	#endregion
 	#endregion
 
+	private IEnumerator SpawnEnemy(string key, float interval = 1f)
+	{
+		while (true)
+		{
+			yield return new WaitForSeconds(interval);
+
+			Vector3 position = new Vector3();
+			position.x = Random.Range(-7f, 7f);
+			position.y = Random.Range(-3.5f, 3.5f);
+			Enemy enemy = GetBuilder(key)
+				.SetActive(true)
+				.SetPosition(position)
+				.Spawn();
+
+			break;
+		}
+	}
 }

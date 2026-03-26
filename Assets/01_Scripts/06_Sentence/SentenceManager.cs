@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public enum E_SentenceType
@@ -143,6 +144,8 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 				}
 			}
 		}
+
+		inventoryPanel.gameObject.SetActive(false);
 	}
 	/// <summary>
 	/// 메인 마무리화 함수 (본인 Main Scene 나갈 시 호출)
@@ -156,6 +159,10 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	#endregion
 
 	#region 유니티 콜백 함수
+	private void OnInventory(InputValue inputValue)
+	{
+		inventoryPanel.gameObject.SetActive(!inventoryPanel.gameObject.activeSelf);
+	}
 	#endregion
 	#endregion
 

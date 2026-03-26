@@ -9,7 +9,6 @@ public class Player : WordObject<Player, PlayerStat>, IDamageSender, IDamageRece
 	#region 기본 템플릿
 	#region 변수
 	protected const float c_MinDamage = 0f;
-
 	#endregion
 
 	#region 프로퍼티
@@ -37,13 +36,14 @@ public class Player : WordObject<Player, PlayerStat>, IDamageSender, IDamageRece
 	public override void Initialize()
 	{
 		base.Initialize();
+
 	}
 	/// <summary>
 	/// 마무리화 함수 (파괴될 때)
 	/// </summary>
 	public override void Finallize()
 	{
-		m_Stat = null;
+
 
 		base.Finallize();
 	}
@@ -72,17 +72,16 @@ public class Player : WordObject<Player, PlayerStat>, IDamageSender, IDamageRece
 	private void OnMove(InputValue inputValue)
 	{
 		movingDirection = inputValue.Get<Vector2>();
-	}
-
-	private void Update()
-	{
-		Move();
+		m_Rigidbody2D.linearVelocity = movingDirection * 5f;
 	}
 	#endregion
 	#endregion
 
 	public void GiveDamage(IDamageReceiver damageReceiver)
 	{
+		if (damageReceiver == null)
+			return;
+
 		onGiveDamage?.Invoke();
 
 		float damage = m_Stat.atkPower;

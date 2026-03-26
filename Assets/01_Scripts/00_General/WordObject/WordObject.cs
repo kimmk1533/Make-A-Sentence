@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObject where TItem : ObjectPoolItem<TItem> where TStat : Stat
 {
 	#region 기본 템플릿
@@ -14,6 +15,7 @@ public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObj
 
 	[SerializeField, ChildComponent("Renderer")]
 	protected SpriteRenderer m_Renderer = null;
+	protected Rigidbody2D m_Rigidbody2D = null;
 	#endregion
 
 	#region 프로퍼티
@@ -38,12 +40,14 @@ public abstract class WordObject<TItem, TStat> : ObjectPoolItem<TItem>, IWordObj
 	/// </summary>
 	public override void Initialize()
 	{
+		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 	}
 	/// <summary>
 	/// 마무리화 함수 (파괴될 때)
 	/// </summary>
 	public override void Finallize()
 	{
+		m_Rigidbody2D = null;
 	}
 
 	/// <summary>

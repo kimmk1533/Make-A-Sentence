@@ -48,9 +48,8 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 	/// </summary>
 	public override void Finallize()
 	{
+		m_AttackTimer.Pause();
 		m_AttackTimer = null;
-
-		m_Stat = null;
 
 		base.Finallize();
 	}
@@ -99,6 +98,9 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 
 	public void GiveDamage(IDamageReceiver damageReceiver)
 	{
+		if (damageReceiver == null)
+			return;
+
 		onGiveDamage?.Invoke();
 
 		float damage = m_Stat.atkPower;

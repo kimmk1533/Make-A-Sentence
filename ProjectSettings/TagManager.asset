@@ -16,7 +16,7 @@ TagManager:
   - Player Magic
   - Enemy Magic
   - Nearby Finder
-  - 
+  - Obstacle
   - 
   - 
   - 
@@ -38,8 +38,23 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Map
+    uniqueID: 3513763225
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Enemy
+    uniqueID: 488814679
+    locked: 0
+  - name: Player
+    uniqueID: 764642763
+    locked: 0
+  - name: Projectile
+    uniqueID: 606171673
+    locked: 0
+  - name: Obstacle
+    uniqueID: 3100062943
     locked: 0
   m_RenderingLayers:
   - Default
