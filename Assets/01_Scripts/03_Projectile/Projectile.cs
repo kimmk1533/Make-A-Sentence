@@ -91,8 +91,7 @@ public class Projectile : WordObject<Projectile, ProjectileStat>
 
 	private void Update()
 	{
-		m_LifeTimeTimer.Update();
-		if (m_LifeTimeTimer.TimeCheck(true))
+		if (m_LifeTimeTimer.Update())
 		{
 			onTimeOut?.Invoke();
 

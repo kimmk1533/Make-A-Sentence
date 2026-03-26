@@ -26,6 +26,7 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	#region 기본 템플릿
 	#region 변수
 	// Game
+	private Dictionary<float, UtilClass.Timer> m_TimerMap = null;
 
 	// UI
 	private Dictionary<E_SentenceType, List<string>> m_SentenceTextMap = null;
@@ -59,6 +60,10 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	{
 		base.Initialize();
 
+		// Game
+		m_TimerMap = new Dictionary<float, UtilClass.Timer>();
+
+		// UI
 		m_SentenceTextMap = new Dictionary<E_SentenceType, List<string>>();
 		for (E_SentenceType sentenceType = E_SentenceType.TimeCondition; sentenceType != E_SentenceType.Max; ++sentenceType)
 		{
@@ -99,14 +104,19 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	/// </summary>
 	public override void Finallize()
 	{
-		base.Finallize();
-
+		// UI
 		foreach (var item in m_SentenceTextMap)
 		{
 			item.Value.Clear();
 		}
 		m_SentenceTextMap.Clear();
 		m_SentenceTextMap = null;
+
+		// Game
+		m_TimerMap.Clear();
+		m_TimerMap = null;
+
+		base.Finallize();
 	}
 
 	/// <summary>
@@ -116,8 +126,7 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	{
 		base.InitializeMain();
 
-		Sentence sentence = null;
-
+		#region 디버그용 문장 생성
 		List<string> sentenceList = new List<string>()
 		{
 			"Time Condition Sentence",
@@ -131,7 +140,7 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 			{
 				for (E_SelectingType targetSelectingType = E_SelectingType.Nearest; targetSelectingType != E_SelectingType.Max; ++targetSelectingType)
 				{
-					sentence = GetBuilder(item)
+					Sentence sentence = GetBuilder(item)
 					.SetParent(content)
 					.SetActive(true)
 					.SetAutoInit(false)
@@ -144,6 +153,7 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 				}
 			}
 		}
+		#endregion
 
 		inventoryPanel.gameObject.SetActive(false);
 	}
@@ -152,9 +162,12 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	/// </summary>
 	public override void FinallizeMain()
 	{
+		foreach (var item in m_TimerMap)
+		{
+			item.Value.Clear();
+		}
+
 		base.FinallizeMain();
-
-
 	}
 	#endregion
 
@@ -163,8 +176,34 @@ public class SentenceManager : ObjectManager<SentenceManager, Sentence>
 	{
 		inventoryPanel.gameObject.SetActive(!inventoryPanel.gameObject.activeSelf);
 	}
+
+	private void Update()
+	{
+		foreach (var item in m_TimerMap)
+		{
+			item.Value.Update();
+		}
+	}
 	#endregion
 	#endregion
+
+	public void AddTimeSentence(float interval, System.Action action)
+	{
+		if (m_TimerMap.TryGetValue(interval, out UtilClass.Timer timer) == false)
+		{
+			timer = new UtilClass.Timer(interval);
+			m_TimerMap.Add(interval, timer);
+		}
+
+		timer.onTime += action;
+	}
+	public void RemoveTimeSentence(float interval, System.Action action)
+	{
+		if (m_TimerMap.TryGetValue(interval, out UtilClass.Timer timer) == false)
+			return;
+
+		timer.onTime -= action;
+	}
 
 	public List<IWordObject> GetWordObjectList(E_SelectingType selectingType, Word word)
 	{

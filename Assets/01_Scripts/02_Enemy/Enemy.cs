@@ -41,6 +41,7 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 		base.Initialize();
 
 		m_AttackTimer = new UtilClass.Timer();
+		m_AttackTimer.onTime += CreateProjectile;
 		m_AttackTimer.Pause();
 	}
 	/// <summary>
@@ -49,6 +50,7 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 	public override void Finallize()
 	{
 		m_AttackTimer.Pause();
+		m_AttackTimer.onTime -= CreateProjectile;
 		m_AttackTimer = null;
 
 		base.Finallize();
@@ -132,8 +134,6 @@ public class Enemy : WordObject<Enemy, EnemyStat>, IDamageSender, IDamageReceive
 			return;
 
 		m_AttackTimer.Update();
-		if (m_AttackTimer.TimeCheck(true) == true)
-			CreateProjectile();
 	}
 	private void CreateProjectile()
 	{

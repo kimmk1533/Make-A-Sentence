@@ -8,7 +8,7 @@ public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 {
 	#region 기본 템플릿
 	#region 변수
-	private Coroutine m_SpawnEnemyCoroutine = null;
+	private UtilClass.Timer<string> m_SpawnEnemyTimer = null;
 	#endregion
 
 	#region 프로퍼티
@@ -32,16 +32,20 @@ public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 	{
 		base.Initialize();
 
-
+		m_SpawnEnemyTimer = new UtilClass.Timer<string>();
+		m_SpawnEnemyTimer.onTime += SpawnEnemy;
+		m_SpawnEnemyTimer.Pause();
 	}
 	/// <summary>
 	/// 기본 마무리화 함수 (게임 종료 시 호출)
 	/// </summary>
 	public override void Finallize()
 	{
+		m_SpawnEnemyTimer.Pause();
+		m_SpawnEnemyTimer.onTime -= SpawnEnemy;
+		m_SpawnEnemyTimer = null;
+
 		base.Finallize();
-
-
 	}
 
 	/// <summary>
@@ -51,39 +55,42 @@ public class EnemyManager : ObjectManager<EnemyManager, Enemy>
 	{
 		base.InitializeMain();
 
-		m_SpawnEnemyCoroutine = StartCoroutine(SpawnEnemy("Enemy", 1f));
+		// 디버깅
+		SpawnEnemy("Enemy");
+		// 기존 코드
+		//m_SpawnEnemyTimer.interval = 1.5f; // 적 생성 주기
+		//m_SpawnEnemyTimer.Resume();
 	}
 	/// <summary>
 	/// 메인 마무리화 함수 (본인 Main Scene 나갈 시 호출)
 	/// </summary>
 	public override void FinallizeMain()
 	{
-		base.FinallizeMain();
+		m_SpawnEnemyTimer.Clear();
+		m_SpawnEnemyTimer.Pause();
 
-		if (m_SpawnEnemyCoroutine != null)
-			StopCoroutine(m_SpawnEnemyCoroutine);
+		base.FinallizeMain();
 	}
 	#endregion
 
 	#region 유니티 콜백 함수
+	//private void Update()
+	//{
+	//	m_SpawnEnemyTimer.Update();
+	//	m_SpawnEnemyTimer.TimeCheck("Enemy");
+	//}
 	#endregion
 	#endregion
 
-	private IEnumerator SpawnEnemy(string key, float interval = 1f)
+	private void SpawnEnemy(string key)
 	{
-		while (true)
-		{
-			yield return new WaitForSeconds(interval);
+		Vector3 position = new Vector3();
+		position.x = Random.Range(-7f, 7f);
+		position.y = Random.Range(-3.5f, 3.5f);
 
-			Vector3 position = new Vector3();
-			position.x = Random.Range(-7f, 7f);
-			position.y = Random.Range(-3.5f, 3.5f);
-			Enemy enemy = GetBuilder(key)
-				.SetActive(true)
-				.SetPosition(position)
-				.Spawn();
-
-			break;
-		}
+		Enemy enemy = GetBuilder(key)
+			.SetActive(true)
+			.SetPosition(position)
+			.Spawn();
 	}
 }

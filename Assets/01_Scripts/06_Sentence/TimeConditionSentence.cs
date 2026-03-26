@@ -9,12 +9,21 @@ public class TimeConditionSentence : Sentence
 	#region 기본 템플릿
 	#region 변수
 	private static readonly float[] c_IntervalArr = { 0.1f, 0.5f, 1f, 5f, 10f };
-	private UtilClass.Timer m_Timer = null;
 	[SerializeField]
 	private float m_Interval;
 	#endregion
 
 	#region 프로퍼티
+	public float interval
+	{
+		get => m_Interval;
+		set
+		{
+			M_Sentence.RemoveTimeSentence(m_Interval, ActivateSentence);
+			m_Interval = value;
+			M_Sentence.AddTimeSentence(m_Interval, ActivateSentence);
+		}
+	}
 	#endregion
 
 	#region 이벤트
@@ -24,6 +33,7 @@ public class TimeConditionSentence : Sentence
 	#endregion
 
 	#region 매니저
+	private static SentenceManager M_Sentence => SentenceManager.Instance;
 	#endregion
 
 	#region 초기화 & 마무리화 함수
@@ -36,16 +46,17 @@ public class TimeConditionSentence : Sentence
 
 		m_WordTextMap.Add("Interval", () => m_Interval.ToString());
 
+		// 디버깅
+		m_Interval = 1.5f;
+		// 기존 코드
 		//m_Interval = c_IntervalArr[Random.Range(0, c_IntervalArr.Length)];
-		m_Timer = new UtilClass.Timer(m_Interval);
-		m_Timer.Pause();
 	}
 	/// <summary>
 	/// 마무리화 함수
 	/// </summary>
 	public override void Finallize()
 	{
-		m_Timer = null;
+
 
 		base.Finallize();
 	}
@@ -57,15 +68,14 @@ public class TimeConditionSentence : Sentence
 	{
 		base.InitializePoolItem();
 
-		m_Timer.Resume();
+		M_Sentence.AddTimeSentence(m_Interval, ActivateSentence);
 	}
 	/// <summary>
 	/// 마무리화 함수 (ObjectManager를 통해 스폰하면 자동으로 호출되므로 직접 호출 X)
 	/// </summary>
 	public override void FinallizePoolItem()
 	{
-		m_Timer.Clear();
-		m_Timer.Pause();
+		M_Sentence.RemoveTimeSentence(m_Interval, ActivateSentence);
 
 		base.FinallizePoolItem();
 	}
@@ -78,35 +88,9 @@ public class TimeConditionSentence : Sentence
 	#endregion
 
 	#region 유니티 콜백 함수
-	private void Update()
-	{
-		CheckTimeOut();
-	}
-
-	private void OnValidate()
-	{
-		if (m_Timer == null)
-			return;
-
-		m_Timer.interval = m_Interval;
-	}
 	#endregion
 	#endregion
 
-	private void CheckTimeOut()
-	{
-		if (false == isCompleted)
-		{
-			m_Timer.Clear();
-			return;
-		}
-
-		m_Timer.Update();
-		if (m_Timer.TimeCheck(true))
-		{
-			ActivateSentence();
-		}
-	}
 	//public override string ToString()
 	//{
 	//	StringBuilder sb = new StringBuilder(m_ToStringMap["ko-kr"]);

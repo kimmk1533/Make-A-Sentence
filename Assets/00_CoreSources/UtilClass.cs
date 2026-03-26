@@ -236,45 +236,291 @@ public static class UtilClass
 		#endregion
 
 		/// <summary>
-		/// 설정한 시간이 되었는 지 확인하는 함수
+		/// 시간 경과
 		/// </summary>
 		/// <param name="autoClear">자동으로 다시 시작 여부</param>
 		/// <returns>설정한 시간이 되었는 지</returns>
-		public bool TimeCheck(bool autoClear = false)
+		public bool Update(bool autoClear = true)
 		{
-			if (m_Time >= m_Interval)
-			{
-				if (autoClear)
-					Clear();
-
-				onTime?.Invoke();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		/// <summary>
-		/// 시간 경과
-		/// </summary>
-		public void Update()
-		{
-			Update(1f);
+			return Update(1f);
 		}
 		/// <summary>
 		/// 시간 경과
 		/// </summary>
 		/// <param name="timeScale">시간 배율</param>
-		public void Update(float timeScale)
+		/// <param name="autoClear">자동으로 다시 시작 여부</param>
+		/// <returns>설정한 시간이 되었는 지</returns>
+		public bool Update(float timeScale, bool autoClear = true)
 		{
+			// 예외처리
 			if (m_IsSimulating == false)
-				return;
-
-			if (m_Time >= m_Interval)
-				return;
+				return false;
+			if (m_Interval <= 0f)
+				return false;
 
 			m_Time += Time.deltaTime * timeScale;
+
+			if (m_Time < m_Interval)
+				return false;
+
+			if (autoClear)
+			{
+				while (m_Time >= m_Interval)
+				{
+					InfiniteLoopDetector.Run();
+					m_Time -= m_Interval;
+				}
+			}
+
+			onTime?.Invoke();
+
+			return true;
+		}
+
+		/// <summary>
+		/// 시간 초기화
+		/// </summary>
+		public void Clear()
+		{
+			m_Time = 0f;
+		}
+
+		/// <summary>
+		/// 일시정지
+		/// </summary>
+		public void Pause()
+		{
+			m_IsSimulating = false;
+		}
+		/// <summary>
+		/// 다시 시작
+		/// </summary>
+		public void Resume()
+		{
+			m_IsSimulating = true;
+		}
+	}
+	[System.Serializable]
+	public class Timer<T>
+	{
+		#region 변수
+		[SerializeField]
+		private float m_Interval = 0f;
+		[SerializeField, ReadOnly]
+		private float m_Time = 0f;
+
+		private bool m_IsSimulating = true;
+		#endregion
+
+		#region 프로퍼티
+		public float interval
+		{
+			get => m_Interval;
+			set
+			{
+				m_Interval = value;
+				if (m_Interval < m_Time)
+					m_Time = m_Interval;
+			}
+		}
+		public float time
+		{
+			get => m_Time;
+			set => m_Time = value;
+		}
+		public float progress => m_Time / m_Interval;
+		public bool isPaused => m_IsSimulating == false;
+		#endregion
+
+		#region 이벤트
+		public event Action<T> onTime = null;
+		#endregion
+
+		#region 생성자
+		public Timer()
+		{
+			m_Interval = m_Time = 0f;
+			m_IsSimulating = true;
+
+			onTime = null;
+		}
+		public Timer(float interval, bool filled = false)
+		{
+			m_Interval = interval;
+			m_Time = filled ? interval : 0f;
+			m_IsSimulating = true;
+
+			onTime = null;
+		}
+		public Timer(in Timer<T> timer)
+		{
+			m_Interval = timer.interval;
+			m_Time = timer.m_Time;
+			m_IsSimulating = timer.m_IsSimulating;
+
+			onTime = timer.onTime;
+		}
+		#endregion
+
+		/// <summary>
+		/// 시간 경과
+		/// </summary>
+		public bool Update(T t, bool autoClear = true)
+		{
+			return Update(1f, t);
+		}
+		/// <summary>
+		/// 시간 경과
+		/// </summary>
+		/// <param name="timeScale">시간 배율</param>
+		public bool Update(float timeScale, T t, bool autoClear = true)
+		{
+			// 예외처리
+			if (m_IsSimulating == false)
+				return false;
+			if (m_Interval <= 0f)
+				return false;
+
+			m_Time += Time.deltaTime * timeScale;
+
+			if (m_Time < m_Interval)
+				return false;
+
+			if (autoClear)
+			{
+				while (m_Time >= m_Interval)
+				{
+					InfiniteLoopDetector.Run();
+					m_Time -= m_Interval;
+				}
+			}
+
+			onTime?.Invoke(t);
+
+			return true;
+		}
+
+		/// <summary>
+		/// 시간 초기화
+		/// </summary>
+		public void Clear()
+		{
+			m_Time = 0f;
+		}
+
+		/// <summary>
+		/// 일시정지
+		/// </summary>
+		public void Pause()
+		{
+			m_IsSimulating = false;
+		}
+		/// <summary>
+		/// 다시 시작
+		/// </summary>
+		public void Resume()
+		{
+			m_IsSimulating = true;
+		}
+	}
+	[System.Serializable]
+	public class Timer<T1, T2>
+	{
+		#region 변수
+		[SerializeField]
+		private float m_Interval = 0f;
+		[SerializeField, ReadOnly]
+		private float m_Time = 0f;
+
+		private bool m_IsSimulating = true;
+		#endregion
+
+		#region 프로퍼티
+		public float interval
+		{
+			get => m_Interval;
+			set
+			{
+				m_Interval = value;
+				if (m_Interval < m_Time)
+					m_Time = m_Interval;
+			}
+		}
+		public float time
+		{
+			get => m_Time;
+			set => m_Time = value;
+		}
+		public float progress => m_Time / m_Interval;
+		public bool isPaused => m_IsSimulating == false;
+		#endregion
+
+		#region 이벤트
+		public event Action<T1, T2> onTime = null;
+		#endregion
+
+		#region 생성자
+		public Timer()
+		{
+			m_Interval = m_Time = 0f;
+			m_IsSimulating = true;
+
+			onTime = null;
+		}
+		public Timer(float interval, bool filled = false)
+		{
+			m_Interval = interval;
+			m_Time = filled ? interval : 0f;
+			m_IsSimulating = true;
+
+			onTime = null;
+		}
+		public Timer(in Timer<T1, T2> timer)
+		{
+			m_Interval = timer.interval;
+			m_Time = timer.m_Time;
+			m_IsSimulating = timer.m_IsSimulating;
+
+			onTime = timer.onTime;
+		}
+		#endregion
+
+		/// <summary>
+		/// 시간 경과
+		/// </summary>
+		public bool Update(T1 t1, T2 t2, bool autoClear = true)
+		{
+			return Update(1f, t1, t2);
+		}
+		/// <summary>
+		/// 시간 경과
+		/// </summary>
+		/// <param name="timeScale">시간 배율</param>
+		public bool Update(float timeScale, T1 t1, T2 t2, bool autoClear = true)
+		{
+			// 예외처리
+			if (m_IsSimulating == false)
+				return false;
+			if (m_Interval <= 0f)
+				return false;
+
+			m_Time += Time.deltaTime * timeScale;
+
+			if (m_Time < m_Interval)
+				return false;
+
+			if (autoClear)
+			{
+				while (m_Time >= m_Interval)
+				{
+					InfiniteLoopDetector.Run();
+					m_Time -= m_Interval;
+				}
+			}
+
+			onTime?.Invoke(t1, t2);
+
+			return true;
 		}
 
 		/// <summary>

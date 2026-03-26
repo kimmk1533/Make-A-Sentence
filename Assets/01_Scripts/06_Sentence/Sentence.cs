@@ -54,7 +54,7 @@ public abstract class Sentence : ObjectPoolItem<Sentence>
 	#endregion
 
 	#region 매니저
-	protected static SentenceManager M_Sentence => SentenceManager.Instance;
+	private static SentenceManager M_Sentence => SentenceManager.Instance;
 	#endregion
 
 	#region 초기화 & 마무리화 함수
